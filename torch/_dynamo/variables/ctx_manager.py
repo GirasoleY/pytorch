@@ -704,9 +704,6 @@ class TorchFunctionDisableVariable(ContextWrappingVariable):
         )
         install_guard(self._guards_singleton)
 
-    def enter(self, tx):
-        return variables.ConstantVariable.create(None)
-
     def set_cleanup_hook(self, tx: "InstructionTranslator", fn=None):
         if fn is None:
 
