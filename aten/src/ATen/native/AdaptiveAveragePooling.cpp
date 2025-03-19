@@ -63,14 +63,10 @@ namespace {
     const Tensor& grad_output,
     const Tensor& input)
   {
-    int64_t ndim = grad_output.ndimension();
-    for (const auto i : c10::irange(1, ndim)) {
-      TORCH_CHECK(grad_output.size(i) > 0,
-        "adaptive_avg_pool2d_backward(): Expected grad_output to have non-zero size for non-batch dimensions, "
-        "but grad_output has sizes ", grad_output.sizes(), " with dimension ", i, " being "
-        "empty");
-    }
-
+    adaptive_pool_empty_output_check(grad_output, "adaptive_avg_pool2d_backward");
+    int64_t ndim = grad_output.dim();
+    TORCH_CHECK(input.dim() == ndim,
+      "adaptive_avg_pool2d_backward(): Expected dimensions ", input.dim(), " for `grad_output` but got dimensions ", ndim);
     TORCH_CHECK((ndim == 3 || ndim == 4),
       "adaptive_avg_pool2d_backward(): Expected 3D or 4D tensor, but got ", input.sizes());
     TORCH_CHECK(input.dtype() == grad_output.dtype(),
